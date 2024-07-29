@@ -6,13 +6,13 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { CertificadoModule } from './certificado/certificado.module';
 import { envSchema } from './env';
+import { EventoModule } from './evento/evento.module';
+import { InscricaoModule } from './inscricao/inscricao.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsuarioModule } from './usuario/usuario.module';
-import { AuthModule } from './auth/auth.module';
-import { EventoModule } from './evento/evento.module';
-import { CertificadoModule } from './certificado/certificado.module';
-import { ParticipanteModule } from './participante/participante.module';
 
 @Module({
   imports: [
@@ -49,7 +49,7 @@ import { ParticipanteModule } from './participante/participante.module';
     AuthModule,
     EventoModule,
     CertificadoModule,
-    ParticipanteModule,
+    InscricaoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

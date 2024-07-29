@@ -1,9 +1,11 @@
+import { PrismaService } from '@/prisma/prisma.service';
 import { Module } from '@nestjs/common';
-import { CertificadoService } from './certificado.service';
 import { CertificadoController } from './certificado.controller';
+import { CertificadoService } from './certificado.service';
 
 @Module({
   controllers: [CertificadoController],
-  providers: [CertificadoService],
+  providers: [CertificadoService, PrismaService],
+  exports: [CertificadoService],
 })
 export class CertificadoModule {}

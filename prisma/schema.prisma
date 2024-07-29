@@ -24,63 +24,58 @@ enum StatusCertificado {
 }
 
 model Usuario {
-  id           Int            @id @default(autoincrement())
-  nome         String         @db.VarChar(100)
-  email        String         @unique @db.VarChar(100)
-  senha        String         @db.VarChar(100)
-  perfil       Perfil         @default(USUARIO)
-  dataCadastro DateTime?      @default(now()) @map("dt_cadastro") @db.Timestamp(0)
-  avatar       String?        @db.VarChar(60)
-  Participante Participante[]
-  Certificado  Certificado[]
+  id           Int         @id @default(autoincrement())
+  nome         String      @db.VarChar(100)
+  email        String      @unique @db.VarChar(100)
+  senha        String      @db.VarChar(100)
+  perfil       Perfil      @default(USUARIO)
+  dataCadastro DateTime?   @default(now()) @map("dt_cadastro") @db.Timestamp(0)
+  avatar       String?     @db.VarChar(60)
+  Participante Inscricao[]
 
   @@map("usuario")
 }
 
 model Evento {
-  id              Int            @id @default(autoincrement())
-  nome            String         @db.VarChar(100)
-  descricao       String?        @db.Text
-  dataInicio      DateTime       @map("dt_inicio") @db.Timestamp(0)
-  dataFim         DateTime       @map("dt_fim") @db.Timestamp(0)
-  local           String         @db.VarChar(100)
-  quantidateHoras Int            @map("qtd_horas")
-  quantidadeVagas Int?           @map("qtd_vagas")
-  status          Status         @default(ATIVO)
-  imagem          String?        @db.VarChar(120)
-  dataCadastro    DateTime?      @default(now()) @map("dt_cadastro") @db.Timestamp(0)
-  Participante    Participante[]
-  Certificado     Certificado[]
+  id              Int         @id @default(autoincrement())
+  nome            String      @db.VarChar(100)
+  descricao       String?     @db.Text
+  dataInicio      DateTime    @map("dt_inicio") @db.Timestamp(0)
+  dataFim         DateTime    @map("dt_fim") @db.Timestamp(0)
+  local           String      @db.VarChar(100)
+  quantidateHoras Int         @map("qtd_horas")
+  quantidadeVagas Int?        @map("qtd_vagas")
+  status          Status      @default(ATIVO)
+  imagem          String?     @db.VarChar(120)
+  dataCadastro    DateTime?   @default(now()) @map("dt_cadastro") @db.Timestamp(0)
+  Participante    Inscricao[]
 
   @@map("evento")
 }
 
 model Certificado {
-  id           Int               @id @default(autoincrement())
-  usuarioId    Int               @map("usuario_id")
-  eventoId     Int               @map("evento_id")
   inscricaoId  Int               @map("inscricao_id")
+  chave        String            @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   status       StatusCertificado @default(PENDENTE)
   dataCadastro DateTime?         @default(now()) @map("dt_cadastro") @db.Timestamp(0)
   url          String?           @db.VarChar(60)
 
-  Usuario      Usuario      @relation(fields: [usuarioId], references: [id])
-  Evento       Evento       @relation(fields: [eventoId], references: [id])
-  Participante Participante @relation(fields: [inscricaoId], references: [id])
+  Inscricao Inscricao @relation(fields: [inscricaoId], references: [id])
 
+  @@id([inscricaoId])
   @@map("certificado")
 }
 
-model Participante {
+model Inscricao {
   id          Int           @id @default(autoincrement())
   numero      String        @map("numero_inscricao") @db.VarChar(20)
   usuarioId   Int           @map("usuario_id")
   eventoId    Int           @map("evento_id")
-  dataInsc    DateTime      @map("dt_inscricao") @db.Timestamp(0) @default(dbgenerated("CURRENT_DATE"))
+  dataInsc    DateTime      @default(dbgenerated("CURRENT_DATE")) @map("dt_inscricao") @db.Timestamp(0)
   Certificado Certificado[]
 
   Usuario Usuario @relation(fields: [usuarioId], references: [id])
   Evento  Evento  @relation(fields: [eventoId], references: [id])
 
-  @@map("participante")
+  @@map("inscricao")
 }
