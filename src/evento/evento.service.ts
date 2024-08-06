@@ -1,5 +1,6 @@
 import { PrismaService } from '@/prisma/prisma.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Status } from '@prisma/client';
 import * as fs from 'fs/promises';
 import { EventoDto } from './dto/evento.dto';
 
@@ -11,6 +12,7 @@ export class EventoService {
 
 
     async create(eventoDto: EventoDto) {
+        const {nome, descricao, quantidateHoras, quantidadeVagas, local, status} = eventoDto;
 
         const dataInicio = new Date(eventoDto.dataInicio)
         const dataFim = new Date(eventoDto.dataFim)
@@ -19,7 +21,12 @@ export class EventoService {
             data: {
                 dataInicio,
                 dataFim,
-                ...eventoDto
+                nome,
+                descricao,
+                quantidateHoras, 
+                quantidadeVagas, 
+                local, 
+                status: Status[status]
             }
         })
     }
