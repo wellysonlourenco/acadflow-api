@@ -22,14 +22,14 @@ export class InscricaoService {
         await this.usuarioService.exists(usuarioId);
         await this.eventoService.exists(eventoId);
 
-        const numero = usuarioId + crypto.randomBytes(6).toString('hex') + eventoId;
+        const numeroInscricao = usuarioId + crypto.randomBytes(5).toString('hex') + eventoId;
 
         try {
             const inscricao = await this.prisma.inscricao.create({
                 data: {
                     usuarioId,
                     eventoId,
-                    numero,
+                    numeroInscricao,
                 },
             });
 

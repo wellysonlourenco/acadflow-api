@@ -9,6 +9,7 @@ export const eventoSchema = z.object ({
     dataFim: z.coerce.date(),
     quantidateHoras: z.number(),
     quantidadeVagas: z.number().nullish(),
+    categoriaId: z.number(),
     local: z.string().nullish(),
     status: z.nativeEnum(Status).default(Status.ATIVO),
     imagem: z.string().optional().nullish(),
