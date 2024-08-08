@@ -13,6 +13,7 @@ import { EventoModule } from './evento/evento.module';
 import { InscricaoModule } from './inscricao/inscricao.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsuarioModule } from './usuario/usuario.module';
+import { CategoriaModule } from './categoria/categoria.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { UsuarioModule } from './usuario/usuario.module';
     EventoModule,
     CertificadoModule,
     InscricaoModule,
+    CategoriaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
