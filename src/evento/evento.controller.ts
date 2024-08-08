@@ -2,7 +2,7 @@ import { multerConfig } from '@/middleware/DiskStorage';
 import { FileSizeValidationPipe } from '@/pipe/uploaded-file';
 import { EventoValidationPipe } from '@/schema/evento';
 import { OrderParamSchema, orderValidationPipe, PageParamSchema, pageValidatioPipe, PerPageParamSchema, perPageValidationPipe, SearchParamSchema, searchValidationPipe } from '@/schema/page-param';
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, Query, UploadedFile, UseInterceptors, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, FileTypeValidator, Get, HttpCode, HttpException, HttpStatus, MaxFileSizeValidator, Param, ParseFilePipe, ParseIntPipe, Patch, Post, Query, UploadedFile, UseInterceptors, UsePipes } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from 'fs/promises';
 import { EventoDto } from './dto/evento.dto';
@@ -15,12 +15,53 @@ export class EventoController {
 
   @Post()
   @HttpCode(201)
-  @UsePipes(EventoValidationPipe)
+  @UseInterceptors(FileInterceptor('imagem', multerConfig))
+    //@UsePipes(EventoValidationPipe)
   async create(
-    @Body() eventoDto: EventoDto
+    @Body() eventoDto: EventoDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 3 * 1024 * 1024 }),
+          new FileTypeValidator({ fileType: /image\/(jpeg|jpg|png|gif|webp)/ }), // Use a expressão regular para permitir múltiplos tipos
+        ],
+        fileIsRequired: false,
+      }),
+    ) file: Express.Multer.File,
   ) {
-    return this.eventoService.create(eventoDto)
+
+    const {
+      nome,
+      descricao,
+      dataInicio,
+      dataFim,
+      quantidateHoras,
+      quantidadeVagas,
+      local,
+      status
+    } = eventoDto;
+
+    let imagem = null;
+    if (file) {
+      imagem = file.filename;
+    }
+
+    return this.eventoService.create(
+      {
+        nome,
+        descricao,
+        dataInicio,
+        dataFim,
+        quantidateHoras,
+        quantidadeVagas,
+        local,
+        status,
+        imagem
+      }
+    )
   }
+
+
 
 
   @Get()
@@ -55,7 +96,7 @@ export class EventoController {
   @Get(':id')
   @HttpCode(200)
   async getEventoById(
-    @Param('id', ParseIntPipe) id: number 
+    @Param('id', ParseIntPipe) id: number
   ) {
     return this.eventoService.getEventoById(id)
   }
@@ -82,33 +123,33 @@ export class EventoController {
 
 
   @Patch('imagem/:id')
-    @UseInterceptors(FileInterceptor('imagem', multerConfig))
-    async updateAvatar(
-        @Param('id', ParseIntPipe) id: number,
-        @UploadedFile(
-            new FileSizeValidationPipe(),
-        ) file: Express.Multer.File,
-    ) {
+  @UseInterceptors(FileInterceptor('imagem', multerConfig))
+  async updateAvatar(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFile(
+      new FileSizeValidationPipe(),
+    ) file: Express.Multer.File,
+  ) {
 
-        if (!file) {
-            throw new HttpException('O arquivo nao é uma imagem', HttpStatus.BAD_REQUEST)
-        }
-
-        const evento = await this.eventoService.getEventoById(id);
-
-        console.log(evento.imagem)
-        if (evento.imagem) {
-            try {
-                await fs.unlink(`./assets/uploads/imagem/${evento.imagem}`)
-            } catch (error) {
-              evento.imagem = null;
-            }
-        }
-
-        const imagem = file.filename;
-        const user = await this.eventoService.updateImagem(id, imagem);
-        return user
+    if (!file) {
+      throw new HttpException('O arquivo nao é uma imagem', HttpStatus.BAD_REQUEST)
     }
+
+    const evento = await this.eventoService.getEventoById(id);
+
+    console.log(evento.imagem)
+    if (evento.imagem) {
+      try {
+        await fs.unlink(`./assets/uploads/imagem/${evento.imagem}`)
+      } catch (error) {
+        evento.imagem = null;
+      }
+    }
+
+    const imagem = file.filename;
+    const user = await this.eventoService.updateImagem(id, imagem);
+    return user
+  }
 
 
 }

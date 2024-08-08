@@ -12,8 +12,16 @@ export class EventoService {
 
 
     async create(eventoDto: EventoDto) {
-        const {nome, descricao, quantidateHoras, quantidadeVagas, local, status} = eventoDto;
+        const {
+            nome,
+            descricao,
+            local,
+            status,
+            imagem
+        } = eventoDto;
 
+        const quantidateHoras = parseInt(eventoDto.quantidateHoras.toString())
+        const quantidadeVagas = parseInt(eventoDto.quantidadeVagas.toString())
         const dataInicio = new Date(eventoDto.dataInicio)
         const dataFim = new Date(eventoDto.dataFim)
 
@@ -26,32 +34,39 @@ export class EventoService {
                 quantidateHoras, 
                 quantidadeVagas, 
                 local, 
-                status: Status[status]
+                status: Status[status],
+                imagem,
             }
         })
     }
 
 
 
-
-
     async getEventos(take: number, skip: number, searchString: string, orderBy: 'asc' | 'desc') {
 
-        const categorias = await this.prisma.evento.findMany({
+        const eventos = await this.prisma.evento.findMany({
             take: take || undefined,
             skip: skip || undefined,
             where: {
-                OR: [
-                    { nome: { contains: searchString } },
-                    { descricao: { contains: searchString } },
-                ]
+
             },
             orderBy: {
                 nome: orderBy
             }
         });
 
-        return categorias;
+        if (eventos.length > 0) {
+
+
+
+            eventos.map(evento => {
+                if (evento.imagem) {
+                    evento.imagem = `${process.env.APP_URL}/${evento.imagem}`;
+                }
+            });
+        }
+
+        return eventos;
     }
 
     async getEventoById(id: number) {
@@ -134,7 +149,7 @@ export class EventoService {
 
         if(evento.imagem){
             try {
-                await fs.unlink(`./assets/uploads/imagem/${evento.imagem}`)
+                await fs.unlink(`./assets/uploads/${evento.imagem}`)
             } catch (error) {
                 throw new HttpException('Erro ao deletar arquivo', HttpStatus.INTERNAL_SERVER_ERROR);
             }
