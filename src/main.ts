@@ -16,7 +16,7 @@ async function bootstrap() {
 
 
   app.use(express.static(__dirname + 'assets'));
-  app.use('/', express.static('../assets/uploads/avatar'));
+  app.use('/', express.static('../assets/uploads/'));
 
 
   app.enableCors({

@@ -1,4 +1,4 @@
-import { multerConfig } from '@/config/DiskStorage';
+import { multerConfig } from '@/middleware/DiskStorage';
 import { FileSizeValidationPipe } from '@/pipe/uploaded-file';
 import { EventoValidationPipe } from '@/schema/evento';
 import { OrderParamSchema, orderValidationPipe, PageParamSchema, pageValidatioPipe, PerPageParamSchema, perPageValidationPipe, SearchParamSchema, searchValidationPipe } from '@/schema/page-param';
