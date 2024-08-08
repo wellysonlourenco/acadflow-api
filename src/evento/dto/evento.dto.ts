@@ -9,5 +9,6 @@ export class EventoDto {
     quantidadeVagas: number
     local: string
     status: Status
+    categoriaId: number
     imagem: string
 }

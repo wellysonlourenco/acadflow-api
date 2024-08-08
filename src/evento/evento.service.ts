@@ -22,6 +22,7 @@ export class EventoService {
 
         const quantidateHoras = parseInt(eventoDto.quantidateHoras.toString())
         const quantidadeVagas = parseInt(eventoDto.quantidadeVagas.toString())
+        const categoriaId = parseInt(eventoDto.categoriaId.toString())
         const dataInicio = new Date(eventoDto.dataInicio)
         const dataFim = new Date(eventoDto.dataFim)
 
@@ -34,6 +35,7 @@ export class EventoService {
                 quantidateHoras, 
                 quantidadeVagas, 
                 local, 
+                categoriaId,
                 status: Status[status],
                 imagem,
             }

@@ -1,4 +1,4 @@
-import { multerConfig } from '@/middleware/DiskStorage';
+import { multerConfig } from '@/config/DiskStorage';
 import { FileSizeValidationPipe } from '@/pipe/uploaded-file';
 import { EventoValidationPipe } from '@/schema/evento';
 import { OrderParamSchema, orderValidationPipe, PageParamSchema, pageValidatioPipe, PerPageParamSchema, perPageValidationPipe, SearchParamSchema, searchValidationPipe } from '@/schema/page-param';
@@ -34,6 +34,7 @@ export class EventoController {
       nome,
       descricao,
       dataInicio,
+      categoriaId,
       dataFim,
       quantidateHoras,
       quantidadeVagas,
@@ -50,6 +51,7 @@ export class EventoController {
       {
         nome,
         descricao,
+        categoriaId,
         dataInicio,
         dataFim,
         quantidateHoras,
