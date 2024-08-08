@@ -34,7 +34,6 @@ export class InscricaoService {
             });
 
 
-            await this.certificadoService.create(inscricao.id, null);
 
             return inscricao;
 
@@ -75,6 +74,18 @@ export class InscricaoService {
         return inscricoes;
     }
 
+    async countInscricaoByUser(usuarioId: number) {
+        await this.usuarioService.exists(usuarioId);
+
+        const count = await this.prisma.inscricao.count({
+            where: {
+                usuarioId,
+            },
+        });
+
+        return count;
+    }
+
     async findInscriptionsByEvent (eventoId: number, take: number, skip: number, orderBy: 'asc' | 'desc') {
         await this.eventoService.exists(eventoId);
 
@@ -90,6 +101,19 @@ export class InscricaoService {
         });
 
         return inscricoes;
+    }
+
+
+    async countInscricaoByEvent(eventoId: number) {
+        await this.eventoService.exists(eventoId);
+
+        const count = await this.prisma.inscricao.count({
+            where: {
+                eventoId,
+            },
+        });
+
+        return count;
     }
 
 
