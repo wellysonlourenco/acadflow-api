@@ -9,14 +9,14 @@ export class CertificadoService {
     ) { }
 
 
-    async create(inscricaoId: number, url: string) {
+    async create(inscricaoId: number,) {
 
         try {
             const certificado = await this.prisma.certificado.create({
                 data: {
                     inscricaoId,
-                    status: 'PENDENTE',
-                    url: url || undefined || null,
+                    status: 'LIBERADO',
+                    //url: url || undefined || null,
                 },
             });
 

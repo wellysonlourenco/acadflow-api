@@ -4,6 +4,7 @@ export const getHTML = ({
     dtStart,
     qtdHours,
     dtEnd,
+  inscricao,
     createdAt,
     key,
     url,
