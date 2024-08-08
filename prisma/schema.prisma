@@ -42,15 +42,25 @@ model Evento {
   descricao       String?     @db.Text
   dataInicio      DateTime    @map("dt_inicio") @db.Timestamp(0)
   dataFim         DateTime    @map("dt_fim") @db.Timestamp(0)
-  local           String      @db.VarChar(100)
+  local           String?      @db.VarChar(100)
   quantidateHoras Int         @map("qtd_horas")
   quantidadeVagas Int?        @map("qtd_vagas")
   status          Status      @default(ATIVO)
   imagem          String?     @db.VarChar(120)
+  categoriaId     Int         @map("categoria_id")
   dataCadastro    DateTime?   @default(now()) @map("dt_cadastro") @db.Timestamp(0)
+  Categoria       Categoria   @relation(fields: [categoriaId], references: [id])
   Participante    Inscricao[]
 
   @@map("evento")
+}
+
+model Categoria {
+  id        Int      @id @default(autoincrement())
+  descricao String   @db.VarChar(100)
+  Evento    Evento[]
+
+  @@map("categoria")
 }
 
 model Certificado {
@@ -67,12 +77,12 @@ model Certificado {
 }
 
 model Inscricao {
-  id          Int           @id @default(autoincrement())
-  numero      String        @map("numero_inscricao") @db.VarChar(20)
-  usuarioId   Int           @map("usuario_id")
-  eventoId    Int           @map("evento_id")
-  dataInsc    DateTime      @default(dbgenerated("CURRENT_DATE")) @map("dt_inscricao") @db.Timestamp(0)
-  Certificado Certificado[]
+  id              Int           @id @default(autoincrement())
+  numeroInscricao String        @map("numero_inscricao") @db.VarChar(20)
+  usuarioId       Int           @map("usuario_id")
+  eventoId        Int           @map("evento_id")
+  dataInsc        DateTime      @default(dbgenerated("CURRENT_DATE")) @map("dt_inscricao") @db.Timestamp(0)
+  Certificado     Certificado[]
 
   Usuario Usuario @relation(fields: [usuarioId], references: [id])
   Evento  Evento  @relation(fields: [eventoId], references: [id])
